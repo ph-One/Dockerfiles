@@ -51,9 +51,14 @@ RUN kubectl krew install \
     kudo \
     node-shell \
     oidc-login \
+    pod-dive \
     rbac-lookup \
     rbac-view \
     resource-capacity \
     sniff \
+    sudo \
     tail \
+    view-serviceaccount-kubeconfig \
+    view-utilization \
+    warp \
     who-can
