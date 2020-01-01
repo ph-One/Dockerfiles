@@ -9,7 +9,7 @@ COPY --from=buildah-bin /usr/local/bin/podman /usr/local/bin/podman
 
 RUN apk add --update ca-certificates tmux openldap-clients openssh git curl
 
-RUN pip install kube-shell
+RUN pip install kube-shell httpie
 
 ARG KUBECTL_V="1.17.0"
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_V}/bin/linux/amd64/kubectl \
@@ -20,10 +20,11 @@ ARG K9S_V="0.10.2"
 RUN curl -LO https://github.com/derailed/k9s/releases/download/${K9S_V}/k9s_${K9S_V}_Linux_x86_64.tar.gz \
     && mv ./k9s_${K9S_V}_Linux_x86_64.tar.gz / \
     && tar xf /k9s_${K9S_V}_Linux_x86_64.tar.gz \
-    && rm /k9s_${K9S_V}_Linux_x86_64.tar.gz
+    && rm /k9s_${K9S_V}_Linux_x86_64.tar.gz \
+    && mv /k9s /usr/local/bin/
 
-ARG CALICOCTL_VERSION="v3.3.1"
-RUN wget https://github.com/projectcalico/calicoctl/releases/download/${CALICOCTL_VERSION}/calicoctl \
+ARG CALICOCTL_VERSION="3.3.1"
+RUN wget https://github.com/projectcalico/calicoctl/releases/download/v${CALICOCTL_VERSION}/calicoctl \
     && chmod +x calicoctl \
     && mv calicoctl /usr/local/bin
 
@@ -32,9 +33,9 @@ RUN cd /usr/local/bin/ \
     && curl -LO https://raw.githubusercontent.com/ahmetb/kubectx/master/kubens \
     && chmod +x kubectx kubens
 
-ARG KREW_V="v0.2.1"
+ARG KREW_V="0.2.1"
 RUN set -x; cd "$(mktemp -d)" \
-    && curl -fsSLO "https://storage.googleapis.com/krew/${KREW_V}/krew.{tar.gz,yaml}" \
+    && curl -fsSLO "https://storage.googleapis.com/krew/v${KREW_V}/krew.{tar.gz,yaml}" \
     && tar zxvf krew.tar.gz \
     && ./krew-"$(uname | tr '[:upper:]' '[:lower:]')_amd64" install --manifest=krew.yaml --archive=krew.tar.gz \
     && kubectl krew update
@@ -62,3 +63,5 @@ RUN kubectl krew install \
     view-utilization \
     warp \
     who-can
+
+ADD motd /etc/motd
