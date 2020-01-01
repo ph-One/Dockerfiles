@@ -65,3 +65,4 @@ RUN kubectl krew install \
     who-can
 
 ADD motd /etc/motd
+ADD profile /etc/profile
